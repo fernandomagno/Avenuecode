@@ -1,0 +1,72 @@
+package br.com.avenuecode;
+
+import static org.junit.Assert.*;
+
+import java.util.concurrent.TimeUnit;
+
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.remote.DesiredCapabilities;
+
+public class CreateSubTask {
+
+	@Test
+	public void validarCriacaoSubTarefas() {
+		
+		DesiredCapabilities capacidade = DesiredCapabilities.chrome();
+		
+		capacidade.setJavascriptEnabled(true);
+		
+		System.setProperty("webdriver.chrome.driver", "C://Drivers/chromedriver.exe");
+		
+		WebDriver driver = new ChromeDriver (capacidade);
+		
+		//login e acesso ao menu principal// 
+		
+		driver.get("https://qa-test.avenuecode.com/users/sign_in");
+		
+		driver.findElement(By.id("user_email")).click();
+		
+		driver.findElement(By.id("user_email")).sendKeys("fernando.magno@tegra.com.br");
+		
+		driver.findElement(By.id("user_password")).click();
+		
+		driver.findElement(By.id("user_password")).sendKeys("fernando");
+		
+		driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
+		
+		driver.findElement(By.name("commit")).click();
+		
+		//Criando uma nova tarefa e verificando a existencia// 
+		
+		driver.findElement(By.xpath("//div[3]/center/a")).click();
+		
+		driver.findElement(By.id("new_task")).click();
+		
+		driver.findElement(By.id("new_task")).sendKeys("OlÃ¡, Fernando Magno");
+			
+		driver.findElement(By.xpath("//form/div[2]/span")).click();
+		
+		driver.manage().timeouts().implicitlyWait(2, TimeUnit.SECONDS);
+		
+		assertEquals("OlÃ¡, Fernando Magno", driver.findElement(By.xpath("//table/tbody/tr[1]/td[2]/a")).getText());
+		
+		//Inclusao de SubTasks de tarefa // 
+		
+		driver.findElement(By.xpath("//button[@class='btn btn-xs btn-primary ng-binding']")).click();
+		
+		assertEquals("SubTask Description:", driver.findElement(By.xpath("//form/div[1]/label")).getText());
+		
+		driver.findElement(By.id("new_sub_task")).sendKeys("SubTasks");
+		
+		driver.findElement(By.id("add-subtask")).click();
+		
+		assertEquals("SubTasks", driver.findElement(By.xpath("//div[2]/table/tbody/tr/td[2]/a")).getText());
+		
+		driver.close();
+		
+	}
+
+}
